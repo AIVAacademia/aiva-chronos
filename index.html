@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AIVA Chronos Pro 2025</title>
+    <title>AIVA Chronos Pro</title>
     
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#1e40af">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <link rel="icon" type="image/jpg" href="logo aiva.jpg">
+    <link rel="icon" type="image/png" href="image_0.png">
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
@@ -23,258 +23,330 @@
             --border: #e2e8f0;
         }
 
+        /* Reset y Estructura Base */
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
         body { 
             font-family: 'Inter', -apple-system, system-ui, sans-serif; 
-            background: #cbd5e1; margin: 0; padding: 0;
+            background: #1e293b; margin: 0; padding: 0;
             display: flex; justify-content: center; height: 100dvh; overflow: hidden;
         }
 
         .app-container { 
             max-width: 500px; width: 100%; background: var(--bg); 
-            display: flex; flex-direction: column; box-shadow: 0 0 50px rgba(0,0,0,0.15);
+            display: flex; flex-direction: column; height: 100%; position: relative;
         }
 
-        /* --- Header --- */
+        /* --- Header Profesional --- */
         header {
             background: var(--primary); color: white; padding: 15px;
             display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); z-index: 20;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2); z-index: 30;
         }
-        .brand { display: flex; align-items: center; }
-        .logo { height: 42px; width: 42px; object-fit: contain; background: white; border-radius: 10px; padding: 3px; margin-right: 12px; }
-        .brand h1 { margin: 0; font-size: 1.2rem; font-weight: 800; letter-spacing: -0.5px; }
+        .brand-box { display: flex; align-items: center; }
+        .logo-img { height: 40px; width: 40px; border-radius: 8px; background: white; padding: 2px; margin-right: 12px; object-fit: contain; }
+        .brand-box h1 { margin: 0; font-size: 1.2rem; font-weight: 800; }
 
-        .v-toggle {
-            background: rgba(255,255,255,0.2); padding: 7px 14px; border-radius: 25px;
-            font-size: 11px; cursor: pointer; border: 1px solid rgba(255,255,255,0.3); font-weight: 700;
+        .v-mode-btn {
+            background: rgba(255,255,255,0.2); padding: 6px 12px; border-radius: 20px;
+            font-size: 11px; cursor: pointer; border: 1px solid rgba(255,255,255,0.4); font-weight: 700;
         }
+        .v-active { background: var(--vacation); border-color: white; animation: pulse 2s infinite; }
 
-        /* --- Lista de Tareas --- */
-        .main-list { flex: 1; overflow-y: auto; padding: 20px; }
-        .list-title { font-size: 0.75rem; font-weight: 800; color: #64748b; text-transform: uppercase; margin-bottom: 12px; letter-spacing: 1px; }
+        /* --- Lista de Tareas (Scroll) --- */
+        .task-list { flex: 1; overflow-y: auto; padding: 20px; background: var(--bg); }
+        .label-section { font-size: 0.75rem; font-weight: 800; color: #64748b; text-transform: uppercase; margin: 10px 0; letter-spacing: 1px; }
 
-        .task-card { 
-            background: var(--card); padding: 16px; border-radius: 15px; margin-bottom: 12px;
-            border-left: 6px solid var(--accent); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+        .card-task { 
+            background: var(--card); padding: 16px; border-radius: 16px; margin-bottom: 12px;
+            border-left: 6px solid var(--accent); box-shadow: 0 4px 6px rgba(0,0,0,0.05);
             display: flex; justify-content: space-between; align-items: center;
-            animation: slideUp 0.3s ease;
+            cursor: pointer;
         }
-        .vencida { opacity: 0.6; background: #f1f5f9; border-left-color: #94a3b8 !important; }
+        .card-done { opacity: 0.6; background: #e2e8f0; border-left-color: #94a3b8 !important; }
 
-        /* --- Formulario de Control --- */
-        .control-panel { 
-            background: white; padding: 20px; border-top: 1px solid var(--border);
-            box-shadow: 0 -10px 20px rgba(0,0,0,0.03);
+        /* --- Formulario Inferior (Centro de Mando) --- */
+        .command-center { 
+            background: white; padding: 20px; border-top: 1.5px solid var(--border);
+            box-shadow: 0 -10px 25px rgba(0,0,0,0.05); z-index: 20;
         }
-        .input-box { width: 100%; margin-bottom: 10px; box-sizing: border-box; }
+        
+        .input-full { width: 100%; display: block; margin-bottom: 10px; }
+        
         input, select, textarea {
-            width: 100%; padding: 14px; border: 1.5px solid var(--border);
-            border-radius: 12px; font-size: 16px; box-sizing: border-box; font-family: inherit;
-            transition: border-color 0.2s;
+            width: 100% !important; display: block; padding: 14px; 
+            border: 2.5px solid var(--border); border-radius: 14px; 
+            font-size: 16px; box-sizing: border-box; font-family: inherit;
+            background: #f8fafc; transition: 0.2s;
         }
-        input:focus { outline: none; border-color: var(--primary); }
+        input:focus, textarea:focus { outline: none; border-color: var(--primary); background: white; }
 
-        .grid-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+        .row-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
 
-        .btn { border: none; border-radius: 12px; font-weight: 800; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
-        .btn-main { background: var(--primary); color: white; width: 100%; padding: 16px; font-size: 16px; margin-bottom: 12px; box-shadow: 0 4px 12px rgba(30, 64, 175, 0.2); }
-        .btn-main:active { transform: scale(0.97); }
+        /* Botones Pro */
+        .btn { border: none; border-radius: 14px; font-weight: 800; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
+        .btn-primary { background: var(--primary); color: white; width: 100%; padding: 18px; font-size: 17px; margin-bottom: 12px; box-shadow: 0 4px 15px rgba(30, 64, 175, 0.3); }
+        .btn-primary:active { transform: scale(0.97); }
 
-        .tool-bar { display: flex; gap: 8px; flex-wrap: wrap; }
-        .btn-tool { background: #f1f5f9; color: #475569; flex: 2; font-size: 12px; padding: 12px 5px; border: 1.5px solid var(--border); }
-        .btn-red { background: #fee2e2; color: #dc2626; flex: 1; border: 1.5px solid #fecaca; }
+        .btn-group { display: flex; gap: 8px; flex-wrap: wrap; }
+        .btn-sec { background: #f1f5f9; color: #475569; flex: 1; min-width: 120px; font-size: 12px; padding: 12px 5px; border: 1.5px solid var(--border); }
+        .btn-pdf { background: #fee2e2; color: #dc2626; width: 50px; border: 1.5px solid #fecaca; }
 
-        .footer-credits { text-align: center; font-size: 11px; color: #94a3b8; margin-top: 15px; }
+        /* Help Button */
+        .help-fab { position: fixed; bottom: 240px; right: 20px; width: 45px; height: 45px; border-radius: 50%; background: var(--accent); color: white; font-weight: bold; font-size: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); z-index: 100; border: none; }
 
-        /* Estilos de Modal */
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; justify-content: center; align-items: center; z-index: 1000; padding: 20px; }
-        .modal { background: white; padding: 25px; border-radius: 20px; width: 100%; max-width: 380px; }
+        /* Modales */
+        .modal-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: flex; justify-content: center; align-items: center; z-index: 1000; padding: 20px; }
+        .modal-content { background: white; padding: 30px; border-radius: 24px; width: 100%; max-width: 400px; }
 
-        @keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-        @media (max-width: 380px) { .btn-tool { flex: 1 1 100%; } }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+        @media (max-width: 400px) { .btn-sec { flex: 1 1 100%; } }
     </style>
 </head>
 <body>
 
 <div class="app-container">
-    <header id="topHeader">
-        <div class="brand">
-            <img src="logo aiva.jpg" alt="Logo AIVA" class="logo">
+    <header id="mainHead">
+        <div class="brand-box">
+            <img src="image_0.png" alt="Logo AIVA" class="logo-img">
             <h1>AIVA Chronos</h1>
         </div>
-        <div id="vacationBtn" class="v-toggle" onclick="toggleVacation()">💼 Modo Oficina</div>
+        <div id="vToggle" class="v-mode-btn" onclick="toggleVacation()">💼 Modo Oficina</div>
     </header>
 
-    <main class="main-list" id="eventList"></main>
+    <main class="task-list" id="taskArea"></main>
 
-    <footer class="control-panel">
-        <div class="input-box">
-            <input type="text" id="taskName" placeholder="¿Qué hay que hacer?">
+    <footer class="command-center">
+        <div class="input-full">
+            <input type="text" id="tName" placeholder="¿Qué hay que hacer hoy?">
         </div>
-        <div class="input-box">
-            <textarea id="taskDesc" placeholder="Detalles u observaciones..." rows="1"></textarea>
+        <div class="input-full">
+            <textarea id="tDesc" placeholder="Añadir detalles u observaciones..." rows="1"></textarea>
         </div>
-        <div class="grid-inputs">
-            <select id="taskCat">
+        <div class="row-grid">
+            <select id="tCat">
                 <option value="trabajo">💼 Trabajo</option>
                 <option value="urgente">🔥 Urgente</option>
                 <option value="personal">🏠 Personal</option>
             </select>
-            <input type="datetime-local" id="taskDate">
+            <input type="datetime-local" id="tDate">
         </div>
         
-        <button class="btn btn-main" onclick="addEvent()">➕ Agendar Tarea</button>
+        <button class="btn btn-primary" onclick="addTask()">➕ Agendar Tarea Nueva</button>
 
-        <div class="tool-bar">
-            <button class="btn btn-tool" onclick="downloadCSV()">📥 Descargar Agenda</button>
-            <button class="btn btn-tool" onclick="document.getElementById('csvIn').click()">📤 Cargar Agenda</button>
-            <button class="btn btn-red" onclick="exportPDF()">📄 PDF</button>
+        <div class="btn-group">
+            <button class="btn btn-sec" onclick="exportCSV()">📥 Descargar Agenda</button>
+            <button class="btn btn-sec" onclick="document.getElementById('csvIn').click()">📤 Cargar Agenda</button>
+            <button class="btn btn-pdf" onclick="savePDF()">📄</button>
         </div>
         <input type="file" id="csvIn" style="display:none" accept=".csv" onchange="importCSV(event)">
         
-        <p class="footer-credits">Desarrollado por <strong>AIVA Academia</strong> &copy; 2025</p>
+        <div style="text-align:center; font-size:11px; color:#94a3b8; margin-top:12px;">Desarrollado por <strong>AIVA Academia</strong> &copy; 2025</div>
     </footer>
 </div>
 
-<audio id="alertSound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="auto"></audio>
-<img id="pdfLogo" src="logo aiva.jpg" style="display:none;">
+<button class="help-fab" onclick="openModal('mHelp')">?</button>
+
+<div id="mEdit" class="modal-bg" style="display:none;">
+    <div class="modal-content">
+        <h2 style="margin-top:0; color:var(--primary)">Editar Registro</h2>
+        <input type="hidden" id="eId">
+        <input type="text" id="eName" class="input-full" style="margin-bottom:10px" placeholder="Título">
+        <textarea id="eDesc" class="input-full" style="margin-bottom:10px" placeholder="Detalles..."></textarea>
+        <div class="row-grid">
+            <select id="eCat">
+                <option value="trabajo">💼 Trabajo</option>
+                <option value="urgente">🔥 Urgente</option>
+                <option value="personal">🏠 Personal</option>
+            </select>
+            <input type="datetime-local" id="eDate">
+        </div>
+        <div style="display:flex; gap:10px; margin-top:20px;">
+            <button class="btn btn-primary" onclick="saveEdit()" style="margin:0">Guardar</button>
+            <button class="btn btn-sec" onclick="closeModal('mEdit')" style="margin:0">Cerrar</button>
+        </div>
+    </div>
+</div>
+
+<div id="mHelp" class="modal-bg" style="display:none;">
+    <div class="modal-content">
+        <h2 style="text-align:center; color:var(--primary)">Guía AIVA</h2>
+        <p style="font-size:14px; color:#475569;">1. <strong>Registro:</strong> Al agendar tu primera tarea, el navegador activará el sonido de la oficina.</p>
+        <p style="font-size:14px; color:#475569;">2. <strong>Gestión:</strong> Toca cualquier tarea para ver detalles o editar su contenido.</p>
+        <button class="btn btn-primary" onclick="closeModal('mHelp')">¡Entendido!</button>
+    </div>
+</div>
+
+<audio id="aSound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="auto"></audio>
+<img id="pdfLogo" src="image_0.png" style="display:none;">
 
 <script>
     const { jsPDF } = window.jspdf;
-    const sound = document.getElementById('alertSound');
-    let vMode = localStorage.getItem('vMode') === 'true';
+    const alertSound = document.getElementById('aSound');
+    let vacation = localStorage.getItem('vacation') === 'true';
 
     document.addEventListener('DOMContentLoaded', () => {
-        syncVacation();
-        cleanOldTasks();
-        render();
-        setInterval(checkAlarms, 10000);
+        applyVacation();
+        autoclean();
+        renderTasks();
+        if(!localStorage.getItem('firstRun')) openModal('mHelp'), localStorage.setItem('firstRun','true');
+        setInterval(alarmLoop, 10000);
     });
 
     function toggleVacation() {
-        vMode = !vMode;
-        localStorage.setItem('vMode', vMode);
-        syncVacation();
+        vacation = !vacation;
+        localStorage.setItem('vacation', vacation);
+        applyVacation();
     }
 
-    function syncVacation() {
-        const btn = document.getElementById('vacationBtn');
-        const header = document.getElementById('topHeader');
-        header.style.background = vMode ? 'var(--vacation)' : 'var(--primary)';
-        btn.innerHTML = vMode ? '🌴 Modo Vacaciones' : '💼 Modo Oficina';
+    function applyVacation() {
+        const btn = document.getElementById('vToggle');
+        const head = document.getElementById('mainHead');
+        head.style.background = vacation ? 'var(--vacation)' : 'var(--primary)';
+        btn.innerHTML = vacation ? '🌴 Modo Vacaciones' : '💼 Modo Oficina';
+        btn.classList.toggle('v-active', vacation);
     }
 
-    function addEvent() {
-        const name = document.getElementById('taskName').value;
-        const desc = document.getElementById('taskDesc').value;
-        const date = document.getElementById('taskDate').value;
-        const cat = document.getElementById('taskCat').value;
+    function addTask() {
+        const name = document.getElementById('tName').value;
+        const desc = document.getElementById('tDesc').value;
+        const date = document.getElementById('tDate').value;
+        const cat = document.getElementById('tCat').value;
 
-        if (!name || !date) return alert("Completa título y fecha.");
+        if (!name || !date) return alert("Completa nombre y fecha.");
 
-        sound.play().then(() => sound.pause()).catch(()=>{});
+        alertSound.play().then(() => alertSound.pause()).catch(()=>{});
 
-        const data = JSON.parse(localStorage.getItem('aiva_tasks')) || [];
-        data.push({ id: Date.now(), name, desc, date, cat, alerted: false });
-        localStorage.setItem('aiva_tasks', JSON.stringify(data));
+        const list = JSON.parse(localStorage.getItem('aiva_db')) || [];
+        list.push({ id: Date.now(), name, desc, date, cat, done: false });
+        localStorage.setItem('aiva_db', JSON.stringify(list));
         
-        document.getElementById('taskName').value = '';
-        document.getElementById('taskDesc').value = '';
-        render();
+        document.getElementById('tName').value = '';
+        document.getElementById('tDesc').value = '';
+        renderTasks();
     }
 
-    function render() {
-        const list = document.getElementById('eventList');
-        const data = JSON.parse(localStorage.getItem('aiva_tasks')) || [];
+    function renderTasks() {
+        const box = document.getElementById('taskArea');
+        const list = JSON.parse(localStorage.getItem('aiva_db')) || [];
         const now = new Date().getTime();
-        list.innerHTML = '';
+        box.innerHTML = '';
 
-        const upcoming = data.filter(e => new Date(e.date).getTime() >= now).sort((a,b) => new Date(a.date) - new Date(b.date));
-        const past = data.filter(e => new Date(e.date).getTime() < now).sort((a,b) => new Date(b.date) - new Date(a.date));
+        const future = list.filter(e => new Date(e.date).getTime() >= now).sort((a,b) => new Date(a.date) - new Date(b.date));
+        const past = list.filter(e => new Date(e.date).getTime() < now).sort((a,b) => new Date(b.date) - new Date(a.date));
 
-        if(upcoming.length) {
-            list.innerHTML += '<div class="list-title">Próximos Compromisos</div>';
-            upcoming.forEach(e => list.innerHTML += taskHTML(e, false));
+        if(future.length) {
+            box.innerHTML += '<div class="label-section">Próximos Compromisos</div>';
+            future.forEach(e => box.innerHTML += buildCard(e, false));
         }
         if(past.length) {
-            list.innerHTML += '<div class="list-title">Tareas de Hoy</div>';
-            past.forEach(e => list.innerHTML += taskHTML(e, true));
+            box.innerHTML += '<div class="label-section">Tareas de Hoy</div>';
+            past.forEach(e => box.innerHTML += buildCard(e, true));
         }
+        if(!list.length) box.innerHTML = '<div style="text-align:center; color:#94a3b8; margin-top:50px;">Tu agenda está libre.</div>';
     }
 
-    function taskHTML(e, isPast) {
+    function buildCard(e, isPast) {
         const time = new Date(e.date).toLocaleString([], {day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit'});
         return `
-            <div class="task-card ${isPast?'vencida':''}">
-                <div style="flex:1">
-                    <small style="color:var(--primary); font-weight:bold;">${time}</small><br>
+            <div class="card-task ${isPast?'card-done':''}">
+                <div style="flex:1" onclick="openEdit(${e.id})">
+                    <small style="color:var(--primary); font-weight:800;">${time}</small><br>
                     <strong>${e.name}</strong>
                 </div>
-                <button onclick="remove(${e.id})" style="background:none; border:none; color:#ef4444; font-size:20px; cursor:pointer;">✕</button>
+                <button onclick="delTask(${e.id})" style="background:none; border:none; color:#ef4444; font-size:22px; cursor:pointer; padding:5px;">✕</button>
             </div>`;
     }
 
-    function checkAlarms() {
-        if(vMode) return;
-        const data = JSON.parse(localStorage.getItem('aiva_tasks')) || [];
+    function alarmLoop() {
+        if(vacation) return;
+        const list = JSON.parse(localStorage.getItem('aiva_db')) || [];
         const now = new Date().getTime();
-        let updated = false;
+        let changed = false;
 
-        data.forEach(e => {
-            if (now >= new Date(e.date).getTime() && !e.alerted) {
-                sound.play(); alert("⏰ AIVA: " + e.name);
-                e.alerted = true; updated = true;
+        list.forEach(e => {
+            if (now >= new Date(e.date).getTime() && !e.done) {
+                alertSound.play(); alert("⏰ AIVA CHRONOS: " + e.name);
+                e.done = true; changed = true;
             }
         });
 
-        if (updated) { localStorage.setItem('aiva_tasks', JSON.stringify(data)); render(); }
+        if (changed) { localStorage.setItem('aiva_db', JSON.stringify(list)); renderTasks(); }
     }
 
-    function remove(id) {
-        if(!confirm("¿Eliminar tarea?")) return;
-        let data = JSON.parse(localStorage.getItem('aiva_tasks')).filter(e => e.id != id);
-        localStorage.setItem('aiva_tasks', JSON.stringify(data));
-        render();
+    function openEdit(id) {
+        const list = JSON.parse(localStorage.getItem('aiva_db'));
+        const e = list.find(x => x.id == id);
+        document.getElementById('eId').value = e.id;
+        document.getElementById('eName').value = e.name;
+        document.getElementById('eDesc').value = e.desc || '';
+        document.getElementById('eDate').value = e.date;
+        document.getElementById('eCat').value = e.cat;
+        openModal('mEdit');
     }
 
-    function downloadCSV() {
-        const data = JSON.parse(localStorage.getItem('aiva_tasks')) || [];
+    function saveEdit() {
+        const id = document.getElementById('eId').value;
+        let list = JSON.parse(localStorage.getItem('aiva_db'));
+        const idx = list.findIndex(x => x.id == id);
+        list[idx].name = document.getElementById('eName').value;
+        list[idx].desc = document.getElementById('eDesc').value;
+        list[idx].date = document.getElementById('eDate').value;
+        list[idx].cat = document.getElementById('eCat').value;
+        list[idx].done = false;
+        localStorage.setItem('aiva_db', JSON.stringify(list));
+        closeModal('mEdit'); renderTasks();
+    }
+
+    function delTask(id) {
+        if(!confirm("¿Borrar tarea?")) return;
+        let list = JSON.parse(localStorage.getItem('aiva_db')).filter(e => e.id != id);
+        localStorage.setItem('aiva_db', JSON.stringify(list));
+        renderTasks();
+    }
+
+    function exportCSV() {
+        const list = JSON.parse(localStorage.getItem('aiva_db')) || [];
         let csv = "id,nombre,descripcion,fecha,categoria,alertado\n";
-        data.forEach(e => csv += `${e.id},"${e.name}","${e.desc||''}",${e.date},${e.cat},${e.alerted}\n`);
-        const blob = new Blob([csv], {type: 'text/csv'});
-        const url = URL.createObjectURL(blob);
+        list.forEach(e => csv += `${e.id},"${e.name}","${e.desc||''}",${e.date},${e.cat},${e.done}\n`);
+        const b = new Blob([csv], {type: 'text/csv'});
+        const url = URL.createObjectURL(b);
         const a = document.createElement("a");
         a.href = url; a.download = "Agenda_AIVA_Elite.csv"; a.click();
     }
 
     function importCSV(ev) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
+        const r = new FileReader();
+        r.onload = (e) => {
             const lines = e.target.result.split('\n').slice(1);
-            const newData = lines.filter(l => l.trim()).map(l => {
+            const data = lines.filter(l => l.trim()).map(l => {
                 const p = l.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
-                return { id: p[0], name: p[1].replace(/"/g,''), desc: p[2].replace(/"/g,''), date: p[3], cat: p[4], alerted: p[5]==='true' };
+                return { id: p[0], name: p[1].replace(/"/g,''), desc: p[2].replace(/"/g,''), date: p[3], cat: p[4], done: p[5]==='true' };
             });
-            localStorage.setItem('aiva_tasks', JSON.stringify(newData)); render(); alert("Agenda cargada.");
+            localStorage.setItem('aiva_db', JSON.stringify(data)); renderTasks(); alert("Datos cargados.");
         };
-        reader.readAsText(ev.target.files[0]);
+        r.readAsText(ev.target.files[0]);
     }
 
-    function exportPDF() {
-        const data = JSON.parse(localStorage.getItem('aiva_tasks')) || [];
+    function savePDF() {
+        const list = JSON.parse(localStorage.getItem('aiva_db')) || [];
         const doc = new jsPDF();
-        doc.addImage(document.getElementById('pdfLogo'), 'JPG', 15, 12, 25, 25);
+        // CORRECCIÓN: Procesar explícitamente como PNG en el JS
+        doc.addImage(document.getElementById('pdfLogo'), 'PNG', 15, 12, 25, 25);
         doc.setFontSize(18); doc.text("REPORTE AIVA CHRONOS", 45, 25);
-        let y = 50; data.forEach((e, i) => { doc.text(`${i+1}. [${e.date}] ${e.name}`, 20, y); y += 10; });
-        doc.save("Reporte_Agenda_AIVA.pdf");
+        let y = 50; list.forEach((e, i) => { doc.text(`${i+1}. [${e.date}] ${e.name}`, 20, y); y += 10; });
+        doc.save("Reporte_AIVA.pdf");
     }
 
-    function cleanOldTasks() { 
-        let data = JSON.parse(localStorage.getItem('aiva_tasks')) || [];
-        const now = new Date().getTime(), day = 86400000;
-        const clean = data.filter(e => (now - new Date(e.date).getTime()) < day);
-        localStorage.setItem('aiva_tasks', JSON.stringify(clean));
+    function autoclean() { 
+        let list = JSON.parse(localStorage.getItem('aiva_db')) || [];
+        const day = 86400000;
+        const clean = list.filter(e => (new Date().getTime() - new Date(e.date).getTime()) < day);
+        localStorage.setItem('aiva_db', JSON.stringify(clean));
     }
+
+    function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 </script>
 </body>
 </html>
