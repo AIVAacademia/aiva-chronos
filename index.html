@@ -3,85 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AIVA Chronos Pro - Elite Office</title>
+    <title>AIVA Chronos Pro - Elite</title>
     
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#1e40af">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="icon" type="image/png" href="image_0.png">
-    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <style>
-        :root {
-            --primary: #1e40af;
-            --accent: #3b82f6;
-            --bg: #f1f5f9;
-            --card: #ffffff;
-            --text: #0f172a;
-        }
+        :root { --primary: #1e40af; --accent: #3b82f6; --bg: #f1f5f9; --card: #ffffff; --text: #0f172a; }
 
         body { 
-            font-family: 'Inter', system-ui, sans-serif; 
-            background: var(--bg); color: var(--text); margin: 0; padding: 0;
-            display: flex; flex-direction: column; height: 100vh; overflow: hidden;
+            font-family: 'Inter', sans-serif; background: var(--bg); margin: 0; padding: 0;
+            display: flex; flex-direction: column; height: 100dvh; overflow: hidden; /* 100dvh soluciona el problema de visibilidad en móviles */
         }
 
-        .app-wrapper { max-width: 600px; margin: 0 auto; display: flex; flex-direction: column; height: 100vh; width: 100%; background: var(--bg); }
+        .app-wrapper { max-width: 600px; margin: 0 auto; display: flex; flex-direction: column; height: 100%; width: 100%; background: var(--bg); position: relative; }
 
-        /* Cabecera Estilo Corporativo */
         header {
-            background: var(--primary); color: white; padding: 12px 15px;
+            background: var(--primary); color: white; padding: 10px 15px;
             display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2); z-index: 100;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
         }
         .header-brand { display: flex; align-items: center; }
-        .header-logo { height: 42px; width: auto; margin-right: 12px; border-radius: 6px; background: white; padding: 2px; }
-        .header-title h1 { margin: 0; font-size: 1.1rem; font-weight: 800; }
-        .header-title small { font-size: 0.65rem; opacity: 0.8; text-transform: uppercase; }
+        .header-logo { height: 35px; width: auto; margin-right: 10px; background: white; border-radius: 5px; padding: 2px; }
+        
+        /* Botón Modo Vacaciones */
+        .vacation-toggle {
+            background: rgba(255,255,255,0.2); padding: 5px 10px; border-radius: 20px;
+            font-size: 10px; cursor: pointer; display: flex; align-items: center; gap: 5px; border: 1px solid transparent;
+        }
+        .vacation-active { background: #f59e0b; border-color: white; animation: pulse 2s infinite; }
 
-        /* Área de Tareas con Scroll */
-        .main-content { flex: 1; overflow-y: auto; padding: 15px; padding-bottom: 20px; }
-        .section-title { font-size: 0.75rem; font-weight: 800; color: #64748b; margin: 15px 0 8px 0; text-transform: uppercase; letter-spacing: 1px; }
+        .main-content { flex: 1; overflow-y: auto; padding: 15px; }
+        .section-title { font-size: 0.7rem; font-weight: 800; color: #64748b; margin-top: 15px; text-transform: uppercase; }
 
-        /* Tarjetas de Eventos */
         .evento { 
             display: flex; justify-content: space-between; align-items: center;
-            padding: 16px; background: var(--card); border-radius: 12px; margin-bottom: 10px;
-            border-left: 6px solid #ccc; box-shadow: 0 2px 4px rgba(0,0,0,0.04);
-            animation: slideIn 0.3s ease;
+            padding: 12px; background: var(--card); border-radius: 10px; margin-bottom: 8px;
+            border-left: 5px solid #ccc; box-shadow: 0 2px 4px rgba(0,0,0,0.04);
         }
-        @keyframes slideIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
+        .vencida { background: #e2e8f0; opacity: 0.7; }
 
-        .vencida { background: #e2e8f0; border-left-color: #94a3b8 !important; opacity: 0.7; }
-        .vencida strong { text-decoration: line-through; color: #64748b; }
+        /* Formulario Compacto (Fix para celulares) */
+        .footer-form { 
+            background: white; padding: 12px 15px; border-top: 1px solid #e2e8f0; 
+            box-shadow: 0 -4px 10px rgba(0,0,0,0.05);
+        }
+        .grid-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+        input, select { width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; box-sizing: border-box; }
         
-        .cat-trabajo { border-left-color: #3b82f6; }
-        .cat-personal { border-left-color: #10b981; }
-        .cat-urgente { border-left-color: #ef4444; }
+        .btn { border: none; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 14px; }
+        .btn-add { background: var(--primary); color: white; width: 100%; margin-bottom: 8px; }
+        .toolbar-csv { display: flex; gap: 8px; }
+        .btn-csv { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; flex: 1; font-size: 11px; }
 
-        /* Formulario Fijo Inferior */
-        .footer-form { background: white; padding: 15px 20px; border-top: 1px solid #e2e8f0; box-shadow: 0 -4px 15px rgba(0,0,0,0.05); }
-        .grid-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 10px 0; }
-        input, select { width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 16px; box-sizing: border-box; }
-        
-        .btn { border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; }
-        .btn:active { transform: scale(0.96); }
-        .btn-pdf { background: #dc2626; color: white; font-size: 12px; }
-        .btn-add { background: var(--primary); color: white; width: 100%; font-size: 16px; margin-bottom: 10px; }
-        .toolbar-csv { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .btn-csv { background: #f1f5f9; color: #475569; font-size: 11px; border: 1px solid #cbd5e1; }
+        .btn-help { position: fixed; bottom: 170px; right: 15px; width: 35px; height: 35px; border-radius: 50%; background: var(--accent); color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.2); z-index: 99; border: none; }
 
-        /* Ayuda y Modales */
-        .btn-help { position: fixed; bottom: 190px; right: 20px; width: 45px; height: 45px; border-radius: 50%; background: var(--accent); color: white; border: none; font-weight: bold; font-size: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); z-index: 90; }
-        
+        /* Modales */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: flex; justify-content: center; align-items: center; z-index: 1000; padding: 20px; }
-        .modal-box { background: white; padding: 30px; border-radius: 20px; max-width: 380px; width: 100%; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); }
-        .modal-box ul { padding-left: 20px; color: #4b5563; line-height: 1.6; }
+        .modal-box { background: white; padding: 20px; border-radius: 15px; max-width: 350px; width: 100%; }
+        .tab-btn { padding: 8px; border: none; background: #eee; border-radius: 5px; cursor: pointer; flex: 1; font-size: 12px; }
+        .tab-active { background: var(--primary); color: white; }
 
-        .brand-footer { text-align: center; font-size: 0.7rem; color: #94a3b8; margin-top: 15px; }
-        .btn-del { background: none; color: #ef4444; font-size: 20px; font-weight: bold; padding: 5px; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
     </style>
 </head>
 <body>
@@ -89,38 +75,35 @@
 <div class="app-wrapper">
     <header>
         <div class="header-brand">
-            <img src="image_0.png" alt="AIVA Logo" class="header-logo">
+            <img src="image_0.png" alt="AIVA" class="header-logo">
             <div class="header-title">
-                <h1>AIVA Chronos</h1>
-                <small>Elite Office Agenda</small>
+                <h1 style="margin:0; font-size:1rem;">AIVA Chronos</h1>
             </div>
         </div>
-        <button class="btn btn-pdf" onclick="exportarPDF()">📄 PDF</button>
+        <div id="vacationBtn" class="vacation-toggle" onclick="toggleVacation()">
+            🌴 <span>Modo Oficina</span>
+        </div>
     </header>
 
-    <div class="main-content" id="listaEventos">
-        </div>
+    <div class="main-content" id="listaEventos"></div>
 
     <div class="footer-form">
-        <input type="text" id="tarea" placeholder="¿Qué debemos resolver hoy?">
+        <input type="text" id="tarea" placeholder="Tarea pendiente...">
         <div class="grid-inputs">
             <select id="categoria">
                 <option value="trabajo">💼 Trabajo</option>
-                <option value="personal">🏠 Personal</option>
                 <option value="urgente">🔥 Urgente</option>
             </select>
             <input type="datetime-local" id="fecha">
         </div>
-        
-        <button class="btn btn-add" onclick="agregarEvento()">➕ Agendar y Activar Alarma</button>
-
+        <button class="btn btn-add" onclick="agregarEvento()">➕ Agendar</button>
         <div class="toolbar-csv">
-            <button class="btn btn-csv" onclick="exportarCSV()">📥 Backup CSV</button>
+            <button class="btn btn-csv" onclick="exportarCSV()">📥 Backup</button>
             <button class="btn btn-csv" onclick="document.getElementById('fileInput').click()">📤 Restaurar</button>
+            <button class="btn btn-pdf" onclick="exportarPDF()" style="background:#dc2626; color:white; border-radius:8px; padding:0 10px;">📄</button>
         </div>
         <input type="file" id="fileInput" style="display:none" accept=".csv" onchange="importarCSV(event)">
-
-        <div class="brand-footer">© 2025 Desarrollado por <strong>AIVA Academia</strong></div>
+        <div style="text-align:center; font-size:9px; color:#94a3b8; margin-top:8px;">AIVA Academia &copy; 2025</div>
     </div>
 </div>
 
@@ -128,17 +111,23 @@
 
 <div id="modalGuia" class="modal-overlay" style="display:none;">
     <div class="modal-box">
-        <div style="text-align:center; margin-bottom:20px;">
-            <img src="image_0.png" alt="AIVA Logo" style="height:60px;">
+        <div style="display:flex; gap:5px; margin-bottom:15px;">
+            <button id="t-guia" class="tab-btn tab-active" onclick="showTab('guia')">Guía</button>
+            <button id="t-faq" class="tab-btn" onclick="showTab('faq')">FAQ</button>
         </div>
-        <h2 style="text-align:center; color:var(--primary); margin:0 0 15px 0;">Guía de Inicio</h2>
-        <ul>
-            <li><strong>Agendar:</strong> Llena los campos y pulsa "+". El primer clic activa el sistema de sonido.</li>
-            <li><strong>Alarmas:</strong> Recibirás alertas visuales y sonoras en tiempo real.</li>
-            <li><strong>Seguridad:</strong> Usa "Backup CSV" para mover tus datos a otro dispositivo.</li>
-            <li><strong>Limpieza:</strong> Las tareas pasadas se eliminan solas tras 24 horas.</li>
-        </ul>
-        <button class="btn btn-add" style="margin-top:15px;" onclick="toggleModal('modalGuia')">Comenzar</button>
+        <div id="cont-guia">
+            <h3 style="margin-top:0">Guía de Uso</h3>
+            <ul style="font-size:13px; padding-left:20px;">
+                <li><strong>Agendar:</strong> Crea la tarea y haz clic en agendar para activar el audio.</li>
+                <li><strong>Modo Vacaciones:</strong> Silencia todas las alarmas sin borrar datos.</li>
+            </ul>
+        </div>
+        <div id="cont-faq" style="display:none">
+            <h3 style="margin-top:0">FAQ</h3>
+            <p style="font-size:12px;"><strong>¿No veo los botones?</strong> El diseño ahora se adapta automáticamente a pantallas pequeñas.</p>
+            <p style="font-size:12px;"><strong>¿Privacidad?</strong> Tus datos residen localmente en esta tablet.</p>
+        </div>
+        <button class="btn btn-add" onclick="toggleModal('modalGuia')">Cerrar</button>
     </div>
 </div>
 
@@ -148,151 +137,111 @@
 <script>
     const { jsPDF } = window.jspdf;
     const audio = document.getElementById('alarmaSound');
-
-    // Registro de Service Worker para PWA
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('./sw.js').catch(err => console.log(err));
-        });
-    }
+    let vacationMode = localStorage.getItem('vacationMode') === 'true';
 
     document.addEventListener('DOMContentLoaded', () => {
+        updateVacationUI();
         autolimpieza();
         mostrarEventos();
-        verificarTutorial();
-        setInterval(revisarAlarmas, 10000); // Revisar cada 10 segundos
+        if(!localStorage.getItem('aiva_v1')) toggleModal('modalGuia'), localStorage.setItem('aiva_v1','true');
+        setInterval(revisarAlarmas, 10000);
     });
 
-    function verificarTutorial() {
-        if (!localStorage.getItem('aiva_tutorial_v1')) {
-            toggleModal('modalGuia');
-            localStorage.setItem('aiva_tutorial_v1', 'true');
-        }
+    function toggleVacation() {
+        vacationMode = !vacationMode;
+        localStorage.setItem('vacationMode', vacationMode);
+        updateVacationUI();
     }
 
-    function toggleModal(id) {
-        const modal = document.getElementById(id);
-        modal.style.display = modal.style.display === 'none' ? 'flex' : 'none';
-    }
-
-    function autolimpieza() {
-        let agenda = JSON.parse(localStorage.getItem('agenda_2025')) || [];
-        const ahora = new Date().getTime();
-        const UN_DIA = 24 * 60 * 60 * 1000;
-        const limpia = agenda.filter(ev => (ahora - new Date(ev.fecha).getTime()) < UN_DIA);
-        localStorage.setItem('agenda_2025', JSON.stringify(limpia));
+    function updateVacationUI() {
+        const btn = document.getElementById('vacationBtn');
+        btn.className = vacationMode ? 'vacation-toggle vacation-active' : 'vacation-toggle';
+        btn.innerHTML = vacationMode ? '🌴 Modo Vacaciones' : '💼 Modo Oficina';
     }
 
     function agregarEvento() {
-        const t = document.getElementById('tarea').value;
-        const f = document.getElementById('fecha').value;
-        const c = document.getElementById('categoria').value;
-        if (!t || !f) return alert("Por favor, ingresa tarea y fecha.");
-
-        // Desbloqueo de audio para navegadores móviles
+        const t = document.getElementById('tarea').value, f = document.getElementById('fecha').value, c = document.getElementById('categoria').value;
+        if (!t || !f) return alert("Datos incompletos");
         audio.play().then(() => audio.pause()).catch(()=>{});
-
         const agenda = JSON.parse(localStorage.getItem('agenda_2025')) || [];
         agenda.push({ id: Date.now(), tarea: t, fecha: f, categoria: c, sonado: false });
         localStorage.setItem('agenda_2025', JSON.stringify(agenda));
-        
         document.getElementById('tarea').value = '';
         mostrarEventos();
     }
 
     function mostrarEventos() {
-        const lista = document.getElementById('listaEventos');
-        const agenda = JSON.parse(localStorage.getItem('agenda_2025')) || [];
-        const ahora = new Date().getTime();
+        const lista = document.getElementById('listaEventos'), agenda = JSON.parse(localStorage.getItem('agenda_2025')) || [], ahora = new Date().getTime();
         lista.innerHTML = '';
-
-        const pendientes = agenda.filter(ev => new Date(ev.fecha).getTime() >= ahora).sort((a,b) => new Date(a.fecha) - new Date(b.fecha));
-        const pasadas = agenda.filter(ev => new Date(ev.fecha).getTime() < ahora).sort((a,b) => new Date(b.fecha) - new Date(a.fecha));
-
-        if(pendientes.length) {
-            lista.innerHTML += '<div class="section-title">Próximos Pendientes</div>';
-            pendientes.forEach(ev => lista.innerHTML += generarHTML(ev, false));
-        }
-        if(pasadas.length) {
-            lista.innerHTML += '<div class="section-title">Completadas (Recientes)</div>';
-            pasadas.forEach(ev => lista.innerHTML += generarHTML(ev, true));
-        }
-        if(!agenda.length) lista.innerHTML = '<div style="text-align:center; color:#94a3b8; margin-top:60px;">No hay tareas en la agenda.</div>';
+        const pend = agenda.filter(ev => new Date(ev.fecha).getTime() >= ahora).sort((a,b)=>new Date(a.fecha)-new Date(b.fecha));
+        const pas = agenda.filter(ev => new Date(ev.fecha).getTime() < ahora).sort((a,b)=>new Date(b.fecha)-new Date(a.fecha));
+        if(pend.length) lista.innerHTML += '<div class="section-title">Pendientes</div>';
+        pend.forEach(ev => lista.innerHTML += generarHTML(ev, false));
+        if(pas.length) lista.innerHTML += '<div class="section-title">Completadas (24h)</div>';
+        pas.forEach(ev => lista.innerHTML += generarHTML(ev, true));
     }
 
-    function generarHTML(ev, esVencida) {
+    function generarHTML(ev, esV) {
         const f = new Date(ev.fecha).toLocaleString([], {day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit'});
-        return `<div class="evento cat-${ev.categoria} ${esVencida ? 'vencida' : ''}">
-            <div><small>${f}</small><br><strong>${ev.tarea}</strong></div>
-            <button class="btn-del" onclick="eliminar(${ev.id})">✕</button>
+        return `<div class="evento cat-${ev.categoria} ${esV?'vencida':''}">
+            <div style="font-size:13px;"><small>${f}</small><br><strong>${ev.tarea}</strong></div>
+            <button style="border:none; background:none; color:red; font-weight:bold; cursor:pointer;" onclick="eliminar(${ev.id})">✕</button>
         </div>`;
     }
 
     function revisarAlarmas() {
-        const agenda = JSON.parse(localStorage.getItem('agenda_2025')) || [];
-        const ahora = new Date().getTime();
-        let huboCambio = false;
-
+        if(vacationMode) return;
+        const agenda = JSON.parse(localStorage.getItem('agenda_2025')) || [], ahora = new Date().getTime();
+        let cambio = false;
         agenda.forEach(ev => {
             if (ahora >= new Date(ev.fecha).getTime() && !ev.sonado) {
-                audio.play();
-                alert("⏰ AIVA RECORDATORIO: " + ev.tarea);
-                ev.sonado = true;
-                huboCambio = true;
+                audio.play(); alert("⏰ AIVA: " + ev.tarea);
+                ev.sonado = true; cambio = true;
             }
         });
-
-        if (huboCambio) {
-            localStorage.setItem('agenda_2025', JSON.stringify(agenda));
-            mostrarEventos();
-        }
+        if(cambio) localStorage.setItem('agenda_2025', JSON.stringify(agenda)), mostrarEventos();
     }
 
-    function exportarPDF() {
-        const agenda = JSON.parse(localStorage.getItem('agenda_2025')) || [];
-        const doc = new jsPDF();
-        doc.addImage(document.getElementById('logoPDF'), 'PNG', 15, 12, 25, 25);
-        doc.setFontSize(18); doc.text("REPORTE AIVA CHRONOS", 45, 22);
-        doc.setFontSize(10); doc.text(`Generado: ${new Date().toLocaleString()}`, 45, 30);
-        doc.line(15, 40, 195, 40);
-
-        let y = 55;
-        agenda.forEach((ev, i) => {
-            doc.text(`${i+1}. [${ev.fecha}] - ${ev.tarea}`, 20, y);
-            y += 10; if(y > 275) { doc.addPage(); y = 20; }
-        });
-        doc.save("Agenda_AIVA_Reporte.pdf");
+    function showTab(t) {
+        document.getElementById('cont-guia').style.display = t === 'guia' ? 'block' : 'none';
+        document.getElementById('cont-faq').style.display = t === 'faq' ? 'block' : 'none';
+        document.getElementById('t-guia').className = t === 'guia' ? 'tab-btn tab-active' : 'tab-btn';
+        document.getElementById('t-faq').className = t === 'faq' ? 'tab-btn tab-active' : 'tab-btn';
     }
 
+    function toggleModal(id) { const m = document.getElementById(id); m.style.display = m.style.display === 'none' ? 'flex' : 'none'; }
+    function autolimpieza() { 
+        let agenda = JSON.parse(localStorage.getItem('agenda_2025')) || [];
+        const ahora = new Date().getTime(), UN_DIA = 24*60*60*1000;
+        const limpia = agenda.filter(ev => (ahora - new Date(ev.fecha).getTime()) < UN_DIA);
+        localStorage.setItem('agenda_2025', JSON.stringify(limpia));
+    }
+    function eliminar(id) { let a = JSON.parse(localStorage.getItem('agenda_2025')).filter(e => e.id != id); localStorage.setItem('agenda_2025', JSON.stringify(a)); mostrarEventos(); }
     function exportarCSV() {
-        const agenda = JSON.parse(localStorage.getItem('agenda_2025')) || [];
+        const a = JSON.parse(localStorage.getItem('agenda_2025')) || [];
         let csv = "id,tarea,fecha,categoria,sonado\n";
-        agenda.forEach(ev => csv += `${ev.id},"${ev.tarea}",${ev.fecha},${ev.categoria},${ev.sonado}\n`);
-        const blob = new Blob([csv], { type: 'text/csv' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url; a.download = "AIVA_Backup.csv"; a.click();
+        a.forEach(ev => csv += `${ev.id},"${ev.tarea}",${ev.fecha},${ev.categoria},${ev.sonado}\n`);
+        const b = new Blob([csv], {type:'text/csv'}), u = URL.createObjectURL(b), l = document.createElement("a");
+        l.href = u; l.download = "AIVA_Backup.csv"; l.click();
     }
-
     function importarCSV(e) {
-        const reader = new FileReader();
-        reader.onload = (event) => {
-            const lineas = event.target.result.split('\n').slice(1);
-            const nueva = lineas.filter(l => l.trim()).map(l => {
+        const r = new FileReader();
+        r.onload = (ev) => {
+            const lineas = ev.target.result.split('\n').slice(1);
+            const n = lineas.filter(l => l.trim()).map(l => {
                 const p = l.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
                 return { id: p[0], tarea: p[1].replace(/"/g,''), fecha: p[2], categoria: p[3], sonado: p[4]==='true' };
             });
-            localStorage.setItem('agenda_2025', JSON.stringify(nueva));
-            mostrarEventos();
-            alert("Agenda restaurada.");
+            localStorage.setItem('agenda_2025', JSON.stringify(n)); mostrarEventos(); alert("Restaurado");
         };
-        reader.readAsText(e.target.files[0]);
+        r.readAsText(e.target.files[0]);
     }
-
-    function eliminar(id) {
-        let agenda = JSON.parse(localStorage.getItem('agenda_2025')).filter(e => e.id != id);
-        localStorage.setItem('agenda_2025', JSON.stringify(agenda));
-        mostrarEventos();
+    function exportarPDF() {
+        const a = JSON.parse(localStorage.getItem('agenda_2025')) || [], doc = new jsPDF();
+        doc.addImage(document.getElementById('logoPDF'), 'PNG', 15, 12, 20, 20);
+        doc.setFontSize(16); doc.text("AIVA CHRONOS REPORT", 40, 25);
+        let y = 45; a.forEach((ev, i) => { doc.text(`${i+1}. [${ev.fecha}] ${ev.tarea}`, 20, y); y += 8; });
+        doc.save("Reporte_AIVA.pdf");
     }
 </script>
 </body>
