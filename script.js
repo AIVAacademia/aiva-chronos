@@ -2,18 +2,11 @@ const { jsPDF } = window.jspdf;
 const audio = document.getElementById('alarmaSound');
 let vacationMode = localStorage.getItem('vacationMode') === 'true';
 
-// Registro de PWA
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js').catch(err => console.log(err));
-    });
-}
-
 document.addEventListener('DOMContentLoaded', () => {
     updateVacationUI();
     autolimpieza();
     mostrarEventos();
-    if (!localStorage.getItem('aiva_v1')) toggleModal('modalGuia'), localStorage.setItem('aiva_v1', 'true');
+    if (!localStorage.getItem('aiva_v2')) toggleModal('modalGuia'), localStorage.setItem('aiva_v2', 'true');
     setInterval(revisarAlarmas, 10000);
 });
 
@@ -32,7 +25,7 @@ function updateVacationUI() {
 
 function agregarEvento() {
     const t = document.getElementById('tarea').value, f = document.getElementById('fecha').value, c = document.getElementById('categoria').value;
-    if (!t || !f) return alert("Completa los campos");
+    if (!t || !f) return alert("Por favor completa los campos.");
     audio.play().then(() => audio.pause()).catch(()=>{});
     const agenda = JSON.parse(localStorage.getItem('agenda_2025')) || [];
     agenda.push({ id: Date.now(), tarea: t, fecha: f, categoria: c, sonado: false });
@@ -46,14 +39,15 @@ function mostrarEventos() {
     lista.innerHTML = '';
     const p = agenda.filter(ev => new Date(ev.fecha).getTime() >= ahora).sort((a,b) => new Date(a.fecha) - new Date(b.fecha));
     const v = agenda.filter(ev => new Date(ev.fecha).getTime() < ahora).sort((a,b) => new Date(b.fecha) - new Date(a.fecha));
-    if(p.length) lista.innerHTML += '<div class="section-title">Pendientes</div>', p.forEach(ev => lista.innerHTML += generarHTML(ev, false));
-    if(v.length) lista.innerHTML += '<div class="section-title">Completadas</div>', v.forEach(ev => lista.innerHTML += generarHTML(ev, true));
+    if(p.length) lista.innerHTML += '<div class="section-title">Próximas Tareas</div>', p.forEach(ev => lista.innerHTML += generarHTML(ev, false));
+    if(v.length) lista.innerHTML += '<div class="section-title">Completadas (Recientes)</div>', v.forEach(ev => lista.innerHTML += generarHTML(ev, true));
 }
 
 function generarHTML(ev, esV) {
-    return `<div class="evento cat-${ev.categoria} ${esV?'vencida':''}">
-        <div><strong>${ev.tarea}</strong></div>
-        <button onclick="eliminar(${ev.id})" style="color:red; background:none; border:none; cursor:pointer;">✕</button>
+    const f = new Date(ev.fecha).toLocaleString([], {day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit'});
+    return `<div class="evento ${esV?'vencida':''}">
+        <div><small style="color:#64748b">${f}</small><br><strong>${ev.tarea}</strong></div>
+        <button onclick="eliminar(${ev.id})" style="background:none; border:none; color:#ef4444; font-size:20px; cursor:pointer;">✕</button>
     </div>`;
 }
 
@@ -73,7 +67,7 @@ function exportarCSV() {
     let csv = "id,tarea,fecha,categoria,sonado\n";
     a.forEach(ev => csv += `${ev.id},"${ev.tarea}",${ev.fecha},${ev.categoria},${ev.sonado}\n`);
     const blob = new Blob([csv], {type: 'text/csv'}), url = URL.createObjectURL(blob), link = document.createElement("a");
-    link.href = url; link.download = "Agenda_AIVA.csv"; link.click();
+    link.href = url; link.download = "Agenda_AIVA_Elite.csv"; link.click();
 }
 
 function importarCSV(e) {
@@ -84,15 +78,16 @@ function importarCSV(e) {
             const p = l.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
             return { id: p[0], tarea: p[1].replace(/"/g,''), fecha: p[2], categoria: p[3], sonado: p[4]==='true' };
         });
-        localStorage.setItem('agenda_2025', JSON.stringify(n)); mostrarEventos(); alert("Agenda cargada");
+        localStorage.setItem('agenda_2025', JSON.stringify(n)); mostrarEventos(); alert("Agenda cargada con éxito.");
     };
     r.readAsText(e.target.files[0]);
 }
 
 function exportarPDF() {
     const a = JSON.parse(localStorage.getItem('agenda_2025')) || [], doc = new jsPDF();
-    doc.text("REPORTE AIVA CHRONOS", 20, 20);
-    let y = 30; a.forEach((ev, i) => { doc.text(`${i+1}. ${ev.tarea}`, 20, y); y += 10; });
+    doc.addImage(document.getElementById('logoPDF'), 'JPG', 15, 12, 25, 25);
+    doc.setFontSize(18); doc.text("REPORTE AIVA CHRONOS", 45, 25);
+    let y = 50; a.forEach((ev, i) => { doc.text(`${i+1}. [${ev.fecha}] ${ev.tarea}`, 20, y); y += 10; });
     doc.save("Reporte_AIVA.pdf");
 }
 
