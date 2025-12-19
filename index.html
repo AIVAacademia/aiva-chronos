@@ -6,7 +6,7 @@
     <title>AIVA Chronos Pro</title>
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="styles.css">
-    <link rel="icon" type="image/png" href="image_0.png">
+    <link rel="icon" type="image/jpg" href="logo aiva.jpg">
     <meta name="theme-color" content="#1e40af">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
@@ -14,39 +14,47 @@
     <div class="app-wrapper">
         <header id="mainHeader">
             <div class="header-brand">
-                <img src="image_0.png" alt="AIVA Logo" class="header-logo">
-                <div class="header-title"><h1>AIVA Chronos</h1></div>
+                <img src="logo aiva.jpg" alt="AIVA Logo" class="header-logo">
+                <div class="header-title">
+                    <h1>AIVA Chronos</h1>
+                    <small>Elite Agenda</small>
+                </div>
             </div>
             <div id="vacationBtn" class="vacation-toggle" onclick="toggleVacation()">
                 💼 <span>Modo Oficina</span>
             </div>
         </header>
 
-        <div class="main-content" id="listaEventos"></div>
+        <main class="main-content" id="listaEventos">
+            </main>
 
-        <div class="footer-form">
-            <input type="text" id="tarea" placeholder="Nueva tarea de oficina...">
-            <div class="grid-inputs">
-                <select id="categoria">
-                    <option value="trabajo">💼 Trabajo</option>
-                    <option value="urgente">🔥 Urgente</option>
-                    <option value="personal">🏠 Personal</option>
-                </select>
-                <input type="datetime-local" id="fecha">
+        <footer class="footer-form">
+            <div class="input-container">
+                <input type="text" id="tarea" placeholder="Nueva tarea de oficina...">
+                <div class="grid-inputs">
+                    <select id="categoria">
+                        <option value="trabajo">💼 Trabajo</option>
+                        <option value="urgente">🔥 Urgente</option>
+                        <option value="personal">🏠 Personal</option>
+                    </select>
+                    <input type="datetime-local" id="fecha">
+                </div>
             </div>
+            
             <button class="btn btn-add" onclick="agregarEvento()">➕ Agendar Tarea</button>
-            <div class="toolbar-csv">
-                <button class="btn btn-csv" onclick="exportarCSV()">📥 Descargar Agenda</button>
-                <button class="btn btn-csv" onclick="document.getElementById('fileInput').click()">📤 Cargar Agenda</button>
+
+            <div class="toolbar-actions">
+                <button class="btn btn-secondary" onclick="exportarCSV()">📥 Descargar Agenda</button>
+                <button class="btn btn-secondary" onclick="document.getElementById('fileInput').click()">📤 Cargar Agenda</button>
                 <button class="btn btn-pdf" onclick="exportarPDF()">📄 PDF</button>
             </div>
+            
             <input type="file" id="fileInput" style="display:none" accept=".csv" onchange="importarCSV(event)">
-            <div class="brand-footer">Desarrollado por <strong>AIVA Academia</strong></div>
-        </div>
+            <p class="credits">Desarrollado por <strong>AIVA Academia</strong></p>
+        </footer>
     </div>
 
     <button class="btn-help" onclick="toggleModal('modalGuia')">?</button>
-
     <div id="modalGuia" class="modal-overlay" style="display:none;">
         <div class="modal-box">
             <div class="tab-nav">
@@ -56,22 +64,18 @@
             <div id="content-guia" class="instructions">
                 <ul>
                     <li><strong>Agendar:</strong> El primer clic activa el sonido.</li>
-                    <li><strong>Respaldo:</strong> Descarga tu agenda para no perder datos.</li>
+                    <li><strong>Vacaciones:</strong> Silencia alarmas sin borrar datos.</li>
                 </ul>
             </div>
             <div id="content-faq" class="instructions" style="display:none;">
-                <ul>
-                    <li><strong>¿Sin internet?</strong> Funciona localmente como App.</li>
-                    <li><strong>¿Privacidad?</strong> Datos guardados en tu tablet.</li>
-                </ul>
+                <p><strong>¿No suena?</strong> Haz clic en la app al abrirla para dar permiso de audio.</p>
             </div>
             <button class="btn btn-add" style="margin-top:15px;" onclick="toggleModal('modalGuia')">Cerrar</button>
         </div>
     </div>
 
     <audio id="alarmaSound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="auto"></audio>
-    <img id="logoPDF" src="image_0.png" style="display:none;">
-    
+    <img id="logoPDF" src="logo aiva.jpg" style="display:none;">
     <script src="script.js"></script>
 </body>
 </html>
