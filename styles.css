@@ -79,3 +79,22 @@ header {
 .tab-nav { display: flex; gap: 10px; margin-bottom: 15px; }
 .tab-btn { flex: 1; padding: 8px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; background: #f1f5f9; }
 .tab-active { background: var(--primary); color: white; }
+
+/* ... (Mantén lo anterior y añade/modifica esto) ... */
+
+textarea {
+    width: 100%; border: 1px solid var(--border); border-radius: 10px;
+    padding: 10px; font-family: inherit; font-size: 14px; margin-bottom: 8px; resize: none;
+}
+
+.modal-input {
+    width: 100%; padding: 10px; border: 1px solid var(--border);
+    border-radius: 8px; margin-bottom: 10px; font-size: 15px; box-sizing: border-box;
+}
+
+.evento-info { flex: 1; cursor: pointer; } /* Hace que la tarea sea clicable */
+
+.evento:hover { background: #fdfdfd; transform: translateY(-1px); }
+
+/* ... (Resto de estilos igual) ... */
+
