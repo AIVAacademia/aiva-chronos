@@ -1,0 +1,20 @@
+{
+  "short_name": "AIVA Chronos",
+  "name": "AIVA Chronos Pro 2025",
+  "icons": [
+    {
+      "src": "image_0.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "image_0.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "./index.html",
+  "display": "standalone",
+  "theme_color": "#1e40af",
+  "background_color": "#f1f5f9"
+}
